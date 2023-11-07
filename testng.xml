@@ -1,0 +1,13 @@
+<suite name="Suite">
+<test name="Test">
+<parameter name="grid" value="yes"/>
+<parameter name="gridURL" value="http://192.168.0.101:4444"/>
+<parameter name="browser" value="chrome"/>
+<parameter name="appURL" value="http://www.fb.com"/>
+<parameter name="ITO" value="10"/>
+<parameter name="ETO" value="9"/>
+<packages>
+<package name="script"/>
+</packages>
+</test>
+</suite>
