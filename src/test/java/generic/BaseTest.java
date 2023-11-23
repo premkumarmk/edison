@@ -6,6 +6,8 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
@@ -15,6 +17,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITestResult;
@@ -29,53 +33,37 @@ public class BaseTest
 	public WebDriver driver;
 	public WebDriverWait wait;
 	
-	@Parameters({"grid","gridURL","browser","appURL","ITO","ETO"})
+	@Parameters({"browser","appURL","ITO","ETO"})
 	@BeforeMethod
 	public void preCondition
 			(
-				@Optional("no") String grid,
-				@Optional("http://localhost:4444") String gridURL,					
-				@Optional("chrome") String browser,
-				@Optional("https://opensource-demo.orangehrmlive.com") String appURL,
-				@Optional("7") String ITO,
-				@Optional("6") String ETO	
+							
+				@Optional("chrome") String browser,		
+				//@Optional("https://myschool.tautmore.com/login") String appURL,
+				@Optional("https://edison.tautmore.com/") String appURL,
+				@Optional("100") String ITO,
+				@Optional("60") String ETO	
 			) throws MalformedURLException	
 	{
 		
-		Reporter.log("Execute in Grid:"+grid,true);
+		//System.setProperty("webdriver.chrome.driver","./exes/chromedriver.exe");
+		ChromeOptions options = new ChromeOptions();
+		options.addArguments("--start-maximized");
+		options.addArguments("--disable-web-security");
+		options.addArguments("--no-proxy-server");
+
+		Map<String, Object> prefs = new HashMap<String, Object>();
+		prefs.put("credentials_enable_service", false);
+		prefs.put("profile.password_manager_enabled", false);
+		options.setExperimentalOption("prefs", prefs);
+		
 		Reporter.log("Browser is:"+browser,true);
+
+		driver=new ChromeDriver(options);
 		
-		
-		if(grid.equalsIgnoreCase("yes"))
-		{
-			URL url=new URL(gridURL);
-			if(browser.equalsIgnoreCase("chrome"))
-			{
-				ChromeOptions options=new ChromeOptions();
-				driver=new RemoteWebDriver(url,options);
-			}
-			else
-			{
-				EdgeOptions options=new EdgeOptions();
-				driver=new RemoteWebDriver(url,options);
-			}
-		}
-		else
-		{
-			switch(browser)
-			{
-			case "chrome":
-							driver=new ChromeDriver();
-							break;
-			default:
-							driver=new EdgeDriver();
-							break;
-			}
-		}
-		
-		
-		
-		
+		//driver=new FirefoxDriver();
+			
+				
 		Reporter.log("Set ITO:"+ITO,true);
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(Integer.valueOf(ITO)));
 		
